@@ -7,9 +7,14 @@
         <div class="mt-5">
             <div class="d-flex justify-content-between mb-3">
                 <h3>Products List</h3>
-                <a class="btn btn-primary" href="">Create</a>
+                <a class="btn btn-primary" href="{{ route('product.create') }}">Create</a>
             </div>
             <div class="col-12">
+                @if(session()->has('success'))
+                <label class="alert alert-success w-100">{{session('success')}}</label>
+                @elseif(session()->has('error'))
+                    <label class="alert alert-danger w-100">{{session('error')}}</label>
+                @endif
                 <table class="table table-striped">
                     <thead>
                         <tr>
@@ -21,20 +26,27 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach (range(1,5) as $i): ?>
+                        @foreach ($products as $product)
                             <tr>
-                                <th><?php echo $i; ?></th>
-                                <td>Shirt</td>
-                                <td>5000</td>
+                                <td>{{ $product->id }}</td>
+                                <td>{{ $product->name }}</td>
+                                <td>{{ $product->price }}</td>
                                 <td>img1</td>
                                 <td>
-                                    <button type="submit" class="btn btn-success">Edit</button>
-                                    <button type="submit" class="btn btn-danger">Delete</button>
+                                    <a href="{{ route('product.edit', $product->id) }}" class="btn btn-success">Edit</a>
+                                    <form action="{{ route('product.destroy', $product->id) }}" method="POST" class="d-inline-block">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger">Delete</button>
+                                    </form>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+                        @endforeach
                     </tbody>
                 </table>
+                <div class="d-flex justify-content-between">
+                    {{ $products->links() }}
+                </div>
             </div>
         </div>
     </div>

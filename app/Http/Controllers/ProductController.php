@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\ProductStoreRequest;
+use App\Http\Requests\ProductUpdateRequest;
+use App\Models\Product;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller
@@ -13,7 +16,9 @@ class ProductController extends Controller
      */
     public function index()
     {
-        return view('product.index');
+        $products = Product::latest()->paginate(5);
+
+        return view('product.index', compact('products'));
     }
 
     /**
@@ -23,7 +28,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        //
+        return view('product.create');
     }
 
     /**
@@ -32,20 +37,16 @@ class ProductController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(ProductStoreRequest $request)
     {
-        //
-    }
+        Product::create([
+            'name' => $request->name,
+            'price' => $request->price,
+        ]);
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        return redirect()->route('product.index')
+            ->with('success','Product created successfully.');
+
     }
 
     /**
@@ -56,7 +57,9 @@ class ProductController extends Controller
      */
     public function edit($id)
     {
-        //
+        $product = Product::findOrFail($id);
+
+        return view('product.edit', compact('product'));
     }
 
     /**
@@ -66,9 +69,16 @@ class ProductController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(ProductUpdateRequest $request, $id)
     {
-        //
+        $product = Product::findOrFail($id);
+
+        $product->update([
+            'name' => $request->name,
+            'price' => $request->price
+        ]);
+
+        return redirect()->route('product.index')->with('success', 'Product updated successfully.');
     }
 
     /**
@@ -79,6 +89,10 @@ class ProductController extends Controller
      */
     public function destroy($id)
     {
-        //
+        $product = Product::findOrFail($id);
+
+        $product->delete();
+
+        return redirect()->back()->with('success', 'Product deleted successfully.');
     }
 }
