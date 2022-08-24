@@ -12,7 +12,7 @@
             </div>
             <div class="card">
                 <div class="card-body">
-                    <form action="{{ route('product.update', $product->id) }}" method="POST">
+                    <form action="{{ route('product.update', $product->id) }}" enctype="multipart/form-data" method="POST">
                         @csrf
                         @method('PUT')
                         <div class="form-group mt-4">
@@ -28,6 +28,14 @@
                             <input type="text" name="price"
                                 class="form-control mt-3 @error('price') border-danger @enderror" placeholder="Product price" value="{{ $product->price }}">
                             @error('price')
+                                <div class="text-danger">
+                                    {{ ($message) }}
+                                <div>
+                            @enderror
+                        </div>
+                        <div class="form-group mt-4">
+                            <input type="file" name="image" multiple class="form-control">
+                            @error('image')
                                 <div class="text-danger">
                                     {{ ($message) }}
                                 <div>

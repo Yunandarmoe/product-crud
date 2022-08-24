@@ -31,7 +31,7 @@
                                 <td>{{ $product->id }}</td>
                                 <td>{{ $product->name }}</td>
                                 <td>{{ $product->price }}</td>
-                                <td>img1</td>
+                                <td><img src="{{ Storage::url($product->image) }}" alt="Product Image" style="height: 150px; width: 150px;">  </td>
                                 <td>
                                     <a href="{{ route('product.edit', $product->id) }}" class="btn btn-success">Edit</a>
                                     <form action="{{ route('product.destroy', $product->id) }}" method="POST" class="d-inline-block">

@@ -39,14 +39,21 @@ class ProductController extends Controller
      */
     public function store(ProductStoreRequest $request)
     {
+        if ($request->hasFile('image')) {
+            $imageuploaded = $request->file('image');
+            $imagename = time() . '_' . $imageuploaded->getClientOriginalName();
+            $filepath = 'public/images';
+            $imagepath = $request->image->storeAs($filepath, $imagename);
+        }
+
         Product::create([
             'name' => $request->name,
             'price' => $request->price,
+            'image' => 'images/' . $imagename,
         ]);
 
         return redirect()->route('product.index')
             ->with('success','Product created successfully.');
-
     }
 
     /**
@@ -73,9 +80,17 @@ class ProductController extends Controller
     {
         $product = Product::findOrFail($id);
 
+        if ($request->hasFile('image')) {
+            $imageuploaded = $request->file('image');
+            $imagename = time() . '_' . $imageuploaded->getClientOriginalName();
+            $filepath = 'public/images';
+            $imagepath = $request->image->storeAs($filepath, $imagename);
+        }
+
         $product->update([
             'name' => $request->name,
-            'price' => $request->price
+            'price' => $request->price,
+            'image' => 'images/' . $imagename
         ]);
 
         return redirect()->route('product.index')->with('success', 'Product updated successfully.');
