@@ -3,15 +3,13 @@
 namespace Tests\Unit;
 
 use Tests\TestCase;
-use App\Models\Product;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ProductCreateTest extends TestCase
 {
-    use RefreshDatabase, WithFaker;
+    use WithFaker;
 
     /** @test */
     public function product_create_screen_can_be_rendered()
@@ -20,19 +18,19 @@ class ProductCreateTest extends TestCase
 
         $response->assertStatus(200);
     }
-    
+
     /** @test */
     public function product_create()
     {
         Storage::fake('avatars');
 
         $response = $this->post(route('product.store'), [
-            'name' => 'The product name',
-            'price' => '1234',
-            'avatar' => UploadedFile::fake()->image('avatar.jpg')
+            'name' => $this->faker->name,
+            'price' => $this->faker->randomNumber(4),
+            'image' => UploadedFile::fake()->image('avatar.jpg')
         ]);
        
-        $response->assertStatus($response->status(), 302);
+        $response->assertStatus($response->status(), 200);
     }
 
     /** @test */
